@@ -1,3 +1,5 @@
+import 'package:liqo_app/Services/api_manager.dart';
+import 'package:liqo_app/models/user_model.dart';
 import 'package:liqo_app/pages/homepage.dart';
 import 'package:liqo_app/pages/nav_bar.dart';
 import 'package:liqo_app/utils/constants.dart';
@@ -12,8 +14,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  ApiManager apiManager = ApiManager();
   var emailIDController = TextEditingController();
   var passwordController = TextEditingController();
+  late LoginUserModel _userModel;
   
 
   @override
@@ -76,10 +81,17 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
               InkWell(
-                onTap: () =>  Navigator.push(
+                onTap: () async{ 
+                  
+                  Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => NavBar())),
+                              builder: (context) => NavBar())); 
+                  _userModel= await apiManager.Login(emailIDController.text.toString(), passwordController.text.toString()) ;
+                  email =emailIDController.text;
+                  password =passwordController.text;
+                  
+                              },
                 child: Container(
                     height: 50,
                     width: MediaQuery.of(context).size.width / 2,

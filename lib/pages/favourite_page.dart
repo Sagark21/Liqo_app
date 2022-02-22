@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:liqo_app/Services/api_manager.dart';
+import 'package:liqo_app/models/user_model.dart';
 
 import 'package:liqo_app/utils/constants.dart';
 
@@ -10,6 +12,14 @@ class FavouritePage extends StatefulWidget {
 }
 
 class _FavouritePageState extends State<FavouritePage> {
+  late Future<HotDealList> _hotDealModel;
+  @override
+  void initState() {
+     _hotDealModel =ApiManager().hotDealImages();
+    super.initState();
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
 
@@ -17,28 +27,10 @@ class _FavouritePageState extends State<FavouritePage> {
 
     double imageHeight = 130;
     double imageWidth = MediaQuery.of(context).size.width / 3;
+    
 
-
-    Row ImageElement(String s1, String s2, String s3) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(
-                s1,
-                height: imageHeight,
-                width: imageWidth,
-              )),
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(s2, height: imageHeight, width: imageWidth)),
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(s3, height: imageHeight, width: imageWidth))
-        ],
-      );
-    }
+    
+    
 
     return SafeArea(
       child: Scaffold(
@@ -87,26 +79,43 @@ class _FavouritePageState extends State<FavouritePage> {
                             style: myStyle(20, Colors.black, FontWeight.w600),
                           ),
                         ),
-                        ImageElement(
-                            "images/455L Ref.png",
-                            "images/Washing Machine Exchange Offer.png",
-                            "images/Washing Machine Exchange Offer-1.png"),
-                            ImageElement(
-                            "images/Washing Machine Exchange Offer-2.png",
-                            "images/Washing Machine Exchange Offer-3.png",
-                            "images/Washing Machine Exchange Offer-4.png"),
-                              ImageElement(
-                            "images/Washing Machine Exchange Offer-5.png",
-                            "images/Washing Machine Exchange Offer-6.png",
-                            "images/Washing Machine Exchange Offer-7.png"),
-                              ImageElement(
-                            "images/Washing Machine Exchange Offer-8.png",
-                            "images/Washing Machine Exchange Offer-9.png",
-                            "images/Washing Machine Exchange Offer-10.png"),
-                            ImageElement(
-                            "images/Washing Machine Exchange Offer-11.png",
-                            "images/Washing Machine Exchange Offer-12.png",
-                            "images/Washing Machine Exchange Offer-13.png"),
+                        FutureBuilder<HotDealList>(
+              future: _hotDealModel,
+              builder: (context, snapshot) {
+                if(!snapshot.hasData)
+                  return Center(child: CircularProgressIndicator());
+
+                return Container(
+                  height: MediaQuery.of(context).size.height*0.7,
+                  color: Colors.blue[100],
+                  child:  GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 1,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          crossAxisCount: 3,
+                        ),
+                   
+                    itemCount: snapshot.data!.hotdeallist!.length,
+                    itemBuilder: (BuildContext context, int itemIndex ) =>
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            child: Image(
+                              image: NetworkImage(snapshot
+                                  .data!.hotdeallist![itemIndex].url
+                                  .toString()),
+                              height: 100,
+                              width:100,
+                            ),
+                          ),
+                        ),
+
+                  ),
+                );
+              }),
+
                         
                       ],
                     ),

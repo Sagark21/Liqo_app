@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:liqo_app/Services/api_manager.dart';
+import 'package:liqo_app/models/user_model.dart';
 import 'package:liqo_app/utils/constants.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -9,6 +11,13 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
+  late Future<HotDealList> _hotDealModel;
+  @override
+  void initState() {
+    _hotDealModel = ApiManager().categoryImages();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,69 +55,106 @@ class _CategoryPageState extends State<CategoryPage> {
                 style: myStyle(15, Colors.black, FontWeight.bold),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage("images/AC Icon.png",),height: 80,width: 80,),
-                      Text("Air Conditioners",style: myStyle(13,Colors.grey,FontWeight.w500),)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage("images/Laptop Icon.png",),height: 80,width: 80,),
-                      Text("Laptops",style: myStyle(13,Colors.grey,FontWeight.w500),)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage("images/Refrigerator Icon.png",),height: 80,width: 80,),
-                      Text("Refrigerators",style: myStyle(13,Colors.grey,FontWeight.w500),)
-                    ],
-                  ),
-                
-                ],
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FutureBuilder<HotDealList>(
+                    future: _hotDealModel,
+                    builder: (context, snapshot) {
+                       if(!snapshot.hasData)
+                  return Center(child: CircularProgressIndicator());
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 1,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          crossAxisCount: 3,
+                        ),
+                        itemCount: snapshot.data!.hotdeallist!.length,
+                        itemBuilder: (BuildContext context, int itemIndex) =>
+                            Container(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image(
+                              image: NetworkImage(snapshot
+                                  .data!.hotdeallist![itemIndex].url
+                                  .toString()),
+                              height: 200,
+                              width: 100,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
               ),
             ),
-             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage("images/Washing Machines Icon.png",),height: 80,width: 80,),
-                      Text("Washing Machines",style: myStyle(13,Colors.grey,FontWeight.w500),)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage("images/Speaker Icon.png",),height: 80,width: 80,),
-                      Text("Speakers",style: myStyle(13,Colors.grey,FontWeight.w500),)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image(image: AssetImage("images/LED Icon.png",),height: 80,width: 80,),
-                      Text("LED TVS",style: myStyle(13,Colors.grey,FontWeight.w500),)
-                    ],
-                  ),
-                
-                ],
-              ),
-            )
           ],
         ),
       ),
     );
   }
 }
+
+
+
+// Padding(
+//               padding: const EdgeInsets.all(10.0),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 children: [
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image(image: AssetImage("images/AC Icon.png",),height: 80,width: 80,),
+//                       Text("Air Conditioners",style: myStyle(13,Colors.grey,FontWeight.w500),)
+//                     ],
+//                   ),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image(image: AssetImage("images/Laptop Icon.png",),height: 80,width: 80,),
+//                       Text("Laptops",style: myStyle(13,Colors.grey,FontWeight.w500),)
+//                     ],
+//                   ),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image(image: AssetImage("images/Refrigerator Icon.png",),height: 80,width: 80,),
+//                       Text("Refrigerators",style: myStyle(13,Colors.grey,FontWeight.w500),)
+//                     ],
+//                   ),
+                
+//                 ],
+//               ),
+//             ),
+//              Padding(
+//               padding: const EdgeInsets.all(10.0),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 children: [
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image(image: AssetImage("images/Washing Machines Icon.png",),height: 80,width: 80,),
+//                       Text("Washing Machines",style: myStyle(13,Colors.grey,FontWeight.w500),)
+//                     ],
+//                   ),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image(image: AssetImage("images/Speaker Icon.png",),height: 80,width: 80,),
+//                       Text("Speakers",style: myStyle(13,Colors.grey,FontWeight.w500),)
+//                     ],
+//                   ),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image(image: AssetImage("images/LED Icon.png",),height: 80,width: 80,),
+//                       Text("LED TVS",style: myStyle(13,Colors.grey,FontWeight.w500),)
+//                     ],
+//                   ),
+                
+//                 ],
+//               ),
+//             )

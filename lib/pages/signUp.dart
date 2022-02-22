@@ -1,5 +1,6 @@
 import 'package:liqo_app/Services/api_manager.dart';
 import 'package:liqo_app/models/user_model.dart';
+import 'package:liqo_app/pages/nav_bar.dart';
 import 'package:liqo_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -10,19 +11,20 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
 }
 
+final _scaffoldKey = GlobalKey<ScaffoldState>();
+
 class _SignUpPageState extends State<SignUpPage> {
   var emailIDController = TextEditingController();
   var passwordController = TextEditingController();
   var nameController = TextEditingController();
   var mobileController = TextEditingController();
-  late UserModel _userModel;
-  ApiManager apiManager =ApiManager();
-
-  
+  late SignUpUserModel _userModel;
+  ApiManager apiManager = ApiManager();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(top: 100),
@@ -111,9 +113,34 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 20),
               InkWell(
                 onTap: () async => {
-                  _userModel = await apiManager.signUp(nameController.toString(), emailIDController.toString(), passwordController.toString()),
-                print(_userModel.name)
-                },
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NavBar())),
+
+                  _userModel = await apiManager.signUp(
+                      nameController.text.toString(),
+                      emailIDController.text.toString(),
+                      mobileController.text.toString(),
+                      passwordController.text.toString()),
+                  if (_userModel != Null)
+                    {
+                      _scaffoldKey.currentState!.showSnackBar(new SnackBar(
+                          content: new Text("Registered Successfully")))
+                    }
+                  else
+                    {
+                      _scaffoldKey.currentState!.showSnackBar(new SnackBar(
+                          content: new Text("Something went wrong")))
+                    },
+                  print(_userModel.name),
+                  name = nameController.text,
+                  email = emailIDController.text,
+                  mobile = mobileController.text,
+                  password = passwordController.text,
+                  
+                              },
+                
                 child: Container(
                     height: 50,
                     width: MediaQuery.of(context).size.width / 2,

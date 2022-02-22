@@ -12,9 +12,8 @@ myStyle(double size,[Color? colour, FontWeight? fw]){
 }
   String? name;
   String? email;
-  int? mobile;
+  String? mobile;
   String? password;
 
-  Uri RegisterApi =Uri.parse("http://liqo.liqo.in/Product/register_customer");
 
- 
+String api ="http://liqo.liqo.in/Product/";
